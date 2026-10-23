@@ -1,0 +1,14 @@
+.env
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+dist/
+build/
+.venv/
+
+# Runtime data if AGENT_HOME is pointed inside the repo
+sessions/
+outbox/
+daemon_state.json
+todos.json

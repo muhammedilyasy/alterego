@@ -1,0 +1,23 @@
+# alterego watchlist — checks for the proactive daemon (`alterego daemon`).
+#
+# Each check is either:
+#   prompt:  run through the agent; if it finds nothing worth surfacing it
+#            replies NOTHING and no notification is written.
+#   shell:   a shell command; any stdout (or a non-zero exit) becomes a
+#            notification in AGENT_HOME/outbox/.
+#
+# The two checks below are EXAMPLES — edit or delete them freely.
+
+checks:
+  # EXAMPLE 1 — a daily morning brief assembled from memory and the todo list.
+  - name: morning-brief
+    every_minutes: 1440
+    prompt: >-
+      Prepare a short morning brief for your user from MEMORY.md, the daily
+      logs and the todo list: what is on today, anything overdue, and one
+      thing worth their attention. Keep it under 10 lines.
+
+  # EXAMPLE 2 — uptime check for a website; silent while the site is up.
+  - name: example-site-uptime
+    every_minutes: 30
+    shell: "curl -sf -o /dev/null https://example.com || echo 'DOWN: https://example.com is not responding'"
