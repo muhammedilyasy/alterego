@@ -2,7 +2,7 @@
 
 A personal AI agent in the style of Meta's Muse: a persistent identity, long-term memory kept as plain markdown, a real toolset, reusable skills/playbooks, and a proactive daemon that checks things on a schedule and surfaces what matters — while you get on with your day.
 
-**Bring your own model.** alterego talks to any OpenAI-compatible API (OpenAI, OpenRouter, Together, Groq, a local Ollama or LM Studio) and to Anthropic's Messages API. The connection is configured purely with environment variables — no code changes, no vendor lock-in.
+**Bring your own model.** alterego talks to any OpenAI-compatible API (OpenAI, OpenRouter, Together, Groq, a local Ollama or LM Studio), to Anthropic's Messages API, or — if you have a Claude subscription — through the Claude Code CLI with no API key at all. The connection is configured purely with environment variables — no code changes, no vendor lock-in.
 
 ## Architecture
 
@@ -121,6 +121,33 @@ LLM_API_KEY=sk-ant-...
 LLM_BASE_URL=https://api.anthropic.com
 LLM_MODEL=claude-sonnet-4-5
 ```
+
+### Claude subscription — via the Claude Code CLI (no API key)
+
+A Claude Pro/Max subscription is not an API key and cannot be pasted into
+the Anthropic block above. But alterego can think *through* the Claude Code
+CLI, which does sign in with a subscription:
+
+```bash
+npm install -g @anthropic-ai/claude-code
+claude            # run once and sign in with your Claude subscription
+```
+
+```bash
+LLM_PROVIDER=claude-code
+# LLM_MODEL is optional — leave unset to use the CLI's configured model,
+# or set it (e.g. claude-sonnet-4-5) to pass --model to the CLI.
+# CLAUDE_CODE_BIN=claude   # only if the binary isn't on PATH as `claude`
+```
+
+How it works: alterego renders the conversation (persona, memory, tool
+results) into a single prompt, invokes `claude -p` with its own tools
+disabled, and reads back either a plain answer or one JSON tool-call
+directive, which alterego executes with its own tools — so approvals,
+memory and skills all still apply. Usage counts against your subscription's
+limits, not API billing. Note: Anthropic positions subscription sign-in for
+Claude Code itself, so treat this mode as personal use of the official CLI,
+not a guaranteed API surface.
 
 ## Usage
 

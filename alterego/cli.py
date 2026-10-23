@@ -100,6 +100,16 @@ def cmd_doctor(settings: Settings) -> int:
     if not settings.api_key and settings.provider == "anthropic":
         console.print("\n[yellow]No LLM_API_KEY set — cannot test the connection.[/yellow]")
         return 0
+    if settings.provider == "claude-code":
+        binary = shutil.which(settings.claude_code_bin)
+        if binary is None:
+            console.print(
+                f"\n[red]Claude Code CLI not found[/red] ({settings.claude_code_bin!r}).\n"
+                "Install it with `npm install -g @anthropic-ai/claude-code`, "
+                "then run `claude` once and sign in with your Claude subscription."
+            )
+            return 1
+        console.print(f"claude binary   : {binary}")
     console.print("\nTesting the model connection with a tiny call...")
     client = LLMClient(settings)
     try:
